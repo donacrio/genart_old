@@ -1,0 +1,18 @@
+{
+  "rust-client.channel": "stable",
+  "cSpell.words": [
+    "Bezier",
+    "bspline",
+    "cgmath",
+    "DARKGRAY",
+    "DARKGREEN",
+    "DARKRED",
+    "nannou",
+    "polyline",
+    "powf",
+    "SPRINGGREEN",
+    "Srgb",
+    "STEELBLUE",
+    "WHITESMOKE"
+  ]
+}
