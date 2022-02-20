@@ -1,0 +1,8 @@
+[package]
+  authors = ["Donatien Criaud <donatien.criaud@gmail.com>"]
+  edition = "2021"
+  name = "texture"
+  version = "0.1.0"
+
+[dependencies]
+  nannou = "0.18"
