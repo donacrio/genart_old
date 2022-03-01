@@ -1,59 +1,82 @@
-mod config;
+mod cli;
 mod model;
 mod polar;
 mod spinner;
 
-use crate::config::CONFIG;
+use crate::cli::run_cli;
 use crate::model::Model;
 use crate::spinner::{Spinner, SpinnerConfig};
 use nannou::app::LoopMode;
 use nannou::prelude::*;
+use std::path::Path;
 
 fn main() {
-    nannou::app(model)
-        .update(update)
-        .loop_mode(LoopMode::NTimes {
-            number_of_updates: 0,
-        })
-        .size(CONFIG.win_size, CONFIG.win_size)
-        .run();
+    match run_cli() {
+        Ok(config) => match config {
+            Some(config) => nannou::app(model)
+                .update(update)
+                .loop_mode(LoopMode::NTimes {
+                    number_of_updates: 0,
+                })
+                .size(config.win_size, config.win_size)
+                .run(),
+            None => std::process::exit(0),
+        },
+        Err(err) => {
+            println!("{}", err);
+            std::process::exit(1);
+        }
+    };
 }
 
 fn model(app: &App) -> Model {
-    let spinner = Spinner::new(SpinnerConfig::new(
-        CONFIG.theta_step,
-        CONFIG.density_max,
-        CONFIG.density_factor,
-        CONFIG.point_max,
-    ));
-    let spinners = vec![spinner];
     let _window = app.new_window().view(view).build().unwrap();
-    let mut model = Model::new(_window, spinners);
+    match run_cli() {
+        Ok(config) => match config {
+            Some(config) => {
+                let mut spinners: Vec<Spinner> = Vec::new();
+                let spinner_size =
+                    1.5 * config.win_size as f32 * 0.95 / config.centers.len() as f32;
 
-    for _i in 1..CONFIG.iterations {
-        model.update();
+                for center in &config.centers {
+                    let spinner = Spinner::new(SpinnerConfig::new(
+                        *center,
+                        config.density_max,
+                        config.density_factor,
+                        config.point_max,
+                        spinner_size,
+                        config.theta_step,
+                    ));
+                    spinners.push(spinner);
+                }
+                let mut model = Model::new(_window, config, spinners);
+                let iterations =
+                    (model.get_config().theta_max / model.get_config().theta_step) as i32;
+                for _i in 1..iterations {
+                    model.update();
+                }
+                model
+            }
+            None => std::process::exit(0),
+        },
+        Err(_) => std::process::exit(1),
     }
-    model
 }
 
 fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    // app.window(model._window)
-    //     .unwrap()
-    //     .capture_frame(Path::new("./frames/test.jpeg"));
+    app.window(model._window)
+        .unwrap()
+        .capture_frame(Path::new("./frames/test.jpeg"));
 
     let draw = app.draw();
 
     draw.background().color(WHEAT);
 
-    let win = app.window_rect();
-    let win_pad = win.pad(0.05 * CONFIG.win_size as f32);
-
     let options = DrawOptions {
-        color: DARKGRAY,
-        weight: Some(CONFIG.point_weight),
-        win_size: win_pad.w(),
+        color: GRAY,
+        weight: Some(model.get_config().point_weight),
     };
 
     for point in model.get_points() {
@@ -66,14 +89,12 @@ fn view(app: &App, model: &Model, frame: Frame) {
 struct DrawOptions {
     pub color: Srgb<u8>,
     pub weight: Option<f32>,
-    pub win_size: f32,
 }
 
 fn draw_point(draw: &Draw, point: &Point2, options: &DrawOptions) {
     let weight = options.weight.unwrap_or(1.);
-    let xy = *point * options.win_size / 2.;
     draw.ellipse()
-        .xy(xy)
+        .xy(*point)
         .w_h(weight, weight)
         .color(options.color);
 }

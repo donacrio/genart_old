@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+dotenv = "0.15.0"
+getopts = "0.2.21"
 nannou = "0.18.1"
 rand = "0.8.5"
 splines = { version = "4.0.3", features = ["std", "glam"] }

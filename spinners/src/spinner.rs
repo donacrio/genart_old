@@ -50,7 +50,7 @@ impl Spinner {
     let n_points = (self.config.n_max_points as f32 * self.get_density()) as i32;
     let points = (0..n_points).map(|i| {
       let t = i as f32 / n_points as f32;
-      spline.sample(t).unwrap()
+      spline.sample(t).unwrap() * self.config.size + self.config.center
     });
 
     self.state.points.extend(points);
@@ -74,24 +74,30 @@ struct SpinnerState {
 }
 
 pub struct SpinnerConfig {
-  theta_incr: f32,
+  center: Point2,
   density_max: f32,
   density_multiplier: f32,
   n_max_points: i32,
+  size: f32,
+  theta_incr: f32,
 }
 
 impl SpinnerConfig {
   pub fn new(
-    theta_incr: f32,
+    center: Point2,
     density_max: f32,
     density_multiplier: f32,
     n_max_points: i32,
+    size: f32,
+    theta_incr: f32,
   ) -> SpinnerConfig {
     SpinnerConfig {
-      theta_incr,
+      center,
       density_max,
       density_multiplier,
       n_max_points,
+      size,
+      theta_incr,
     }
   }
 }

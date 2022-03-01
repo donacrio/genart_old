@@ -1,14 +1,20 @@
+use crate::cli::Config;
 use crate::spinner::Spinner;
 use nannou::prelude::{window, Point2};
 
 pub struct Model {
   pub _window: window::Id,
-  pub spinners: Vec<Spinner>,
+  config: Config,
+  spinners: Vec<Spinner>,
 }
 
 impl Model {
-  pub fn new(_window: window::Id, spinners: Vec<Spinner>) -> Model {
-    Model { _window, spinners }
+  pub fn new(_window: window::Id, config: Config, spinners: Vec<Spinner>) -> Model {
+    Model {
+      _window,
+      config,
+      spinners,
+    }
   }
 
   pub fn update(&mut self) {
@@ -23,5 +29,9 @@ impl Model {
       points.extend(spinner.get_points());
     }
     points
+  }
+
+  pub fn get_config(&self) -> &Config {
+    &self.config
   }
 }
