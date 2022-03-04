@@ -19,5 +19,9 @@
     "Srgb",
     "STEELBLUE",
     "WHITESMOKE"
-  ]
+  ],
+  "evenBetterToml.formatter.indentEntries": true,
+  "evenBetterToml.formatter.indentTables": true,
+  "evenBetterToml.formatter.reorderKeys": true,
+  "evenBetterToml.formatter.allowedBlankLines": 1
 }
