@@ -1,18 +1,18 @@
-name = "default"
+name = "experimental"
 
 [window]
   background_color = { red = 245, green = 222, blue = 179 }
-  height = 400
+  height = 600
   width = 400
 
 [[spinners]]
   center = [0, 0]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 190
+  density_factor = 0.4
+  initial_points = 400
+  radius = 180
   theta_increment = 0.01
   theta_max = 4.71
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.5
+    point_weight = 1
