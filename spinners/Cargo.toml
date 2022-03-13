@@ -9,7 +9,6 @@
 [dependencies]
   clap = { version = "3.1", features = ["derive"] }
   config = { version = "0.12", features = ['toml'] }
-  derive-getters = "0.2"
   lazy_static = "1.4"
   nannou = "0.18"
   rand = "0.8"
