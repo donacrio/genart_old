@@ -1,3 +1,6 @@
 /target
 /frames
-.env
+
+# Configuration files
+/configs
+!configs/**/default.toml
