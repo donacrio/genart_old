@@ -1,4 +1,4 @@
-use crate::config::SpinnerConfig;
+use crate::config::{SpinnerConfig, SpinnerDefaultConfig};
 use nannou::prelude::{deg_to_rad, Point2};
 use rand::prelude::Rng;
 use std::f32::consts::PI;
@@ -13,16 +13,42 @@ pub struct Spinner {
   theta_max: f32,
 }
 
-impl From<&SpinnerConfig> for Spinner {
-  fn from(config: &SpinnerConfig) -> Self {
+pub struct SpinnerInput<'a> {
+  config: &'a SpinnerConfig,
+  default_config: &'a SpinnerDefaultConfig,
+}
+
+impl<'a> SpinnerInput<'a> {
+  pub fn new(config: &'a SpinnerConfig, default_config: &'a SpinnerDefaultConfig) -> Self {
     Self {
-      center: config.center,
-      density: config.density,
-      density_factor: config.density_factor,
-      initial_points: config.initial_points,
-      radius: config.radius,
-      theta_increment: config.theta_increment,
-      theta_max: config.theta_max,
+      config,
+      default_config,
+    }
+  }
+}
+
+impl<'a> From<SpinnerInput<'a>> for Spinner {
+  fn from(input: SpinnerInput<'a>) -> Self {
+    Self {
+      center: input.config.center,
+      density: input.config.density.unwrap_or(input.default_config.density),
+      density_factor: input
+        .config
+        .density_factor
+        .unwrap_or(input.default_config.density_factor),
+      initial_points: input
+        .config
+        .initial_points
+        .unwrap_or(input.default_config.initial_points),
+      radius: input.config.radius.unwrap_or(input.default_config.radius),
+      theta_increment: input
+        .config
+        .theta_increment
+        .unwrap_or(input.default_config.theta_increment),
+      theta_max: input
+        .config
+        .theta_max
+        .unwrap_or(input.default_config.theta_max),
     }
   }
 }
