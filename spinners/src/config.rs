@@ -26,15 +26,26 @@ pub struct WindowConfig {
   pub width: u32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct SpinnerDrawingConfig {
   pub color: Srgb<u8>,
   pub point_weight: f32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct SpinnerConfig {
   pub center: Point2,
+  pub density: Option<f32>,
+  pub density_factor: Option<f32>,
+  pub drawing: Option<SpinnerDrawingConfig>,
+  pub initial_points: Option<i32>,
+  pub radius: Option<f32>,
+  pub theta_increment: Option<f32>,
+  pub theta_max: Option<f32>,
+}
+
+#[derive(Deserialize)]
+pub struct SpinnerDefaultConfig {
   pub density: f32,
   pub density_factor: f32,
   pub drawing: SpinnerDrawingConfig,
@@ -44,12 +55,13 @@ pub struct SpinnerConfig {
   pub theta_max: f32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Config {
   pub iterations: usize,
   pub name: String,
   pub window: WindowConfig,
   pub spinners: Vec<SpinnerConfig>,
+  pub spinner_default_config: SpinnerDefaultConfig,
 }
 
 impl Config {

@@ -10,4 +10,6 @@ pub struct CliArgs {
   /// Path to the Toml configuration file
   #[clap(short, long)]
   pub config_file: Option<String>,
+  #[clap(short, long)]
+  pub name: Option<String>,
 }

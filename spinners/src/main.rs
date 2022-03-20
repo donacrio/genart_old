@@ -4,13 +4,14 @@ mod spinner;
 
 use crate::cli::parse_cli_args;
 use crate::config::{load_config, Config};
-use crate::spinner::Spinner;
+use crate::spinner::{Spinner, SpinnerInput};
 use lazy_static::lazy_static;
 use nannou::prelude::*;
 use texture::TextureSaver;
 
 lazy_static! {
   static ref CONFIG: Config = load_config(parse_cli_args().config_file);
+  static ref NAME: String = parse_cli_args().name.unwrap_or(CONFIG.name.clone());
 }
 
 fn main() {
@@ -53,11 +54,23 @@ fn update(app: &App, model: &mut TextureSaver, _update: Update) {
   draw.background().color(background_color);
 
   for spinner_config in &CONFIG.spinners {
-    let spinner = Spinner::from(spinner_config);
+    let spinner = Spinner::from(SpinnerInput::new(
+      spinner_config,
+      &CONFIG.spinner_default_config,
+    ));
     let points = spinner.compute_points();
     let options = DrawOptions {
-      color: spinner_config.drawing.color.into_format(),
-      point_weight: spinner_config.drawing.point_weight,
+      color: spinner_config
+        .drawing
+        .as_ref()
+        .unwrap_or(&CONFIG.spinner_default_config.drawing)
+        .color
+        .into_format(),
+      point_weight: spinner_config
+        .drawing
+        .as_ref()
+        .unwrap_or(&CONFIG.spinner_default_config.drawing)
+        .point_weight,
     };
     for point in &points {
       draw_point(&draw, point, &options);
@@ -98,5 +111,5 @@ fn capture_directory(app: &nannou::app::App) -> std::path::PathBuf {
     .expect("Could not locate project_path")
     .join("frames")
     .join("spinners")
-    .join(&CONFIG.name)
+    .join(NAME.as_str())
 }

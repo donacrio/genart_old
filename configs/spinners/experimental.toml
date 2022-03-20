@@ -6,14 +6,16 @@ name = "experimental"
   height = 3840
   width = 3840
 
-[[spinners]]
-  center = [0, 0]
+[spinner_default_config]
   density = 1
   density_factor = 0.6
   initial_points = 3000
   radius = 1800
   theta_increment = 0.005
   theta_max = 4.17
-  [spinners.drawing]
+  [spinner_default_config.drawing]
     color = { red = 183, green = 122, blue = 55 }
     point_weight = 1
+
+[[spinners]]
+  center = [0, 0]
