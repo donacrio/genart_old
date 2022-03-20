@@ -1,186 +1,187 @@
+iterations = 1
 name = "frame_phone"
 
 [window]
   background_color = { red = 245, green = 222, blue = 179 }
-  height = 1500
-  width = 1000
+  height = 3840
+  width = 2160
 
 [[spinners]]
-  center = [-200, -400]
+  center = [-500, -1000]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [0, -400]
+  center = [0, -1000]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [200, -400]
+  center = [500, -1000]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [-200, -200]
+  center = [-500, -500]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [0, -200]
+  center = [0, -500]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [200, -200]
+  center = [500, -500]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [-200, 0]
+  center = [-500, 0]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
   center = [0, 0]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [200, 0]
+  center = [500, 0]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [-200, 200]
+  center = [-500, 500]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [0, 200]
+  center = [0, 500]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [200, 200]
+  center = [500, 500]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [-200, 400]
+  center = [-500, 1000]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [0, 400]
+  center = [0, 1000]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
 
 [[spinners]]
-  center = [200, 400]
+  center = [500, 1000]
   density = 1
-  density_factor = 0.8
-  initial_points = 500
-  radius = 90
+  density_factor = 0.6
+  initial_points = 1000
+  radius = 200
   theta_increment = 0.01
   theta_max = 4.17
   [spinners.drawing]
     color = { red = 183, green = 122, blue = 55 }
-    point_weight = 0.3
+    point_weight = 0.8
