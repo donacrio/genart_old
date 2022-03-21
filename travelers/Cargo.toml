@@ -1,0 +1,9 @@
+[package]
+  authors = ["Donatien Criaud <donatien.criaud@gmail.com>"]
+  edition = "2021"
+  name = "travelers"
+  version = "0.1.0"
+
+[dependencies]
+  nannou = "0.18"
+  rand = "0.8"
