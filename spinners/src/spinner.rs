@@ -54,8 +54,7 @@ impl<'a> From<SpinnerInput<'a>> for Spinner {
 }
 
 impl Spinner {
-  pub fn compute_points(&self) -> Vec<Point2> {
-    let mut rng = rand::thread_rng();
+  pub fn compute_points(&self, rng: &mut rand::rngs::SmallRng) -> Vec<Point2> {
     let mut theta_0 = deg_to_rad(360. * rng.gen::<f32>());
     let mut theta_1 = deg_to_rad(360. * rng.gen::<f32>());
     let mut theta_offset = 0.;

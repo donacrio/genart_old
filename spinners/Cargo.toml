@@ -11,5 +11,6 @@
   nannou = "0.18"
   rand = "0.8"
   serde = { version = "1.0", features = ["derive"] }
+  signature = { path = "../signature" }
   splines = { version = "4.0", features = ["std", "glam"] }
   texture = { path = "../texture" }

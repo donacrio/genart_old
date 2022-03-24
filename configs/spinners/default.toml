@@ -1,17 +1,19 @@
+signature_color = { red = 255, green = 255, blue = 255 }
+
 [window]
-  background_color = { red = 245, green = 222, blue = 179 }
-  height = 3840
-  width = 3840
+  background_color = { red = 0, green = 0, blue = 0 }
+  height = 810
+  width = 810
 
 [spinner_default_config]
   density = 1
   density_factor = 0.6
-  initial_points = 3000
-  radius = 1800
-  theta_increment = 0.005
+  initial_points = 750
+  radius = 300
+  theta_increment = 0.01
   theta_max = 4.17
   [spinner_default_config.drawing]
-    color = { red = 183, green = 122, blue = 55 }
+    color = { red = 255, green = 255, blue = 255 }
     point_weight = 1
 
 [[spinners]]
