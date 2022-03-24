@@ -11,7 +11,7 @@ use texture::TextureSaver;
 
 lazy_static! {
   static ref CONFIG: Config = load_config(parse_cli_args().config_file);
-  static ref NAME: String = parse_cli_args().name.unwrap_or(CONFIG.name.clone());
+  static ref NAME: String = parse_cli_args().name.unwrap_or("".to_string());
 }
 
 fn main() {
@@ -19,7 +19,7 @@ fn main() {
     .update(update)
     .exit(exit)
     .loop_mode(LoopMode::NTimes {
-      number_of_updates: CONFIG.iterations,
+      number_of_updates: 0,
     })
     .run();
 }
@@ -33,7 +33,6 @@ fn model(app: &App) -> TextureSaver {
   let w_id = app
     .new_window()
     .size(win_w, win_h)
-    .title(&CONFIG.name)
     .view(view)
     .build()
     .unwrap();

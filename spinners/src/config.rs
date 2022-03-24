@@ -57,8 +57,6 @@ pub struct SpinnerDefaultConfig {
 
 #[derive(Deserialize)]
 pub struct Config {
-  pub iterations: usize,
-  pub name: String,
   pub window: WindowConfig,
   pub spinners: Vec<SpinnerConfig>,
   pub spinner_default_config: SpinnerDefaultConfig,
