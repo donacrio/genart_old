@@ -2,14 +2,7 @@ use nannou::prelude::{Point2, Srgb};
 use serde::Deserialize;
 use std::path::Path;
 
-const CONFIG_DEFAULT_PATH: &str = "configs/spinners/default.toml";
-
-pub fn load_config(path: Option<String>) -> Config {
-  let path = path.as_ref().map(|path| path.as_str()).unwrap_or_else(|| {
-    println!("Could not find configuration file path. Using default configuration");
-    CONFIG_DEFAULT_PATH
-  });
-
+pub fn load_config(path: String) -> Config {
   match Config::new(path) {
     Ok(config) => config,
     Err(err) => {
@@ -57,17 +50,16 @@ pub struct SpinnerDefaultConfig {
 
 #[derive(Deserialize)]
 pub struct Config {
-  pub iterations: usize,
-  pub name: String,
   pub window: WindowConfig,
+  pub signature_color: Srgb<u8>,
   pub spinners: Vec<SpinnerConfig>,
   pub spinner_default_config: SpinnerDefaultConfig,
 }
 
 impl Config {
-  pub fn new(path: &str) -> Result<Self, config::ConfigError> {
+  pub fn new(path: String) -> Result<Self, config::ConfigError> {
     config::Config::builder()
-      .add_source(config::File::from(Path::new(path)))
+      .add_source(config::File::from(Path::new(&path)))
       .build()?
       .try_deserialize()
   }

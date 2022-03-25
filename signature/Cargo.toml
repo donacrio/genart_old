@@ -1,0 +1,10 @@
+[package]
+  authors = ["Donatien Criaud <donatien.criaud@gmail.com>"]
+  edition = "2021"
+  name = "signature"
+  version = "0.1.0"
+
+[dependencies]
+  last-git-commit = "0.2"
+  rand = "0.8"
+  sha256 = "1.0"

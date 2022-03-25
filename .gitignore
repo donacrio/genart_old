@@ -1,5 +1,3 @@
-/target
 /frames
-
-/configs/*/*
-!/configs/*/default.toml
+/target
+/tmp
