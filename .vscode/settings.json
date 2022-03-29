@@ -23,6 +23,7 @@
     "Seedable",
     "SPRINGGREEN",
     "Srgb",
+    "srgba",
     "STEELBLUE",
     "Textue",
     "wgpu",

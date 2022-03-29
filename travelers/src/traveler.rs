@@ -1,4 +1,4 @@
-use nannou::prelude::Vec2;
+use nannou::prelude::{Draw, Srgb, Vec2};
 
 pub struct Traveler {
   pub position: Vec2,
@@ -34,6 +34,19 @@ impl Traveler {
     self.acceleration = Vec2::splat(0.);
   }
 
+  pub fn correct_position(&mut self, width: f32, height: f32) {
+    if self.position.x < -width / 2. {
+      self.position.x = width / 2.;
+    } else if self.position.x > width / 2. {
+      self.position.x = -width / 2.;
+    }
+    if self.position.y < -height / 2. {
+      self.position.y = height / 2.;
+    } else if self.position.y > height / 2. {
+      self.position.y = -height / 2.;
+    }
+  }
+
   fn apply_force(&mut self, force: Vec2) {
     self.acceleration = self.acceleration + force;
   }
@@ -55,5 +68,10 @@ impl Traveler {
       let target = Vec2::new(self.position.x, 0.);
       self.seek(target);
     }
+  }
+
+  pub fn draw(&self, draw: &Draw, target: &Vec2, color: &Srgb<u8>) {
+    draw.ellipse().xy(*target).w_h(1., 1.).color(*color);
+    // Draw x points as regular barycentres
   }
 }
