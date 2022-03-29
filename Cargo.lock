@@ -2509,9 +2509,9 @@ dependencies = [
 name = "travelers"
 version = "0.1.0"
 dependencies = [
+ "display",
  "nannou",
  "rand 0.8.5",
- "texture",
 ]
 
 [[package]]
