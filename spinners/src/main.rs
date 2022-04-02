@@ -6,11 +6,11 @@ mod spinner;
 use crate::cli::parse_cli_args;
 use crate::config::{load_config, Config};
 use crate::spinner::{Spinner, SpinnerInput};
+use display::DisplayDriver;
 use lazy_static::lazy_static;
 use model::Model;
 use nannou::prelude::*;
 use rand::prelude::{thread_rng, Rng};
-use texture::TextureSaver;
 
 const CONFIG_DEFAULT_PATH: &str = "configs/spinners/default.toml";
 const NADOU: &str = "Nadou";
@@ -34,9 +34,7 @@ fn main() {
 }
 
 fn model(app: &App) -> Model {
-  // Write to a 4K UHD texture.
   let texture_size = [CONFIG.window.width, CONFIG.window.height];
-  // Create the window.
   let [win_w, win_h] = [texture_size[0] / 4, texture_size[1] / 4];
   let w_id = app
     .new_window()
@@ -48,7 +46,11 @@ fn model(app: &App) -> Model {
 
   let seed: u64 = thread_rng().gen();
 
-  let model = Model::new(&CONFIG_PATH, seed, TextureSaver::new(&window, texture_size));
+  let model = Model::new(
+    &CONFIG_PATH,
+    seed,
+    DisplayDriver::new(&window, texture_size),
+  );
 
   // Make sure the directory where we will save images to exists.
   std::fs::create_dir_all(&capture_directory(app, &model)).unwrap();
@@ -58,7 +60,7 @@ fn model(app: &App) -> Model {
 
 fn update(app: &App, model: &mut Model, _update: Update) {
   // Reset the `draw` state.
-  let draw = model.texture_saver.draw();
+  let draw = model.display_driver.draw();
   draw.reset();
 
   let background_color: Srgb<f32> = CONFIG.window.background_color.into_format();
@@ -93,17 +95,17 @@ fn update(app: &App, model: &mut Model, _update: Update) {
   // Render our drawing to the texture.
   let window = app.main_window();
   model
-    .texture_saver
+    .display_driver
     .save(&window, capture_directory(app, model))
 }
 
 fn view(_app: &App, model: &Model, frame: Frame) {
-  model.texture_saver.render(frame);
+  model.display_driver.render(frame);
 }
 
 fn exit(app: &App, model: Model) {
   let window = app.main_window();
-  model.texture_saver.wait(&window);
+  model.display_driver.wait(&window);
 }
 
 struct DrawOptions {

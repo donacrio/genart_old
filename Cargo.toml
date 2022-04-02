@@ -1,4 +1,4 @@
 [workspace]
   resolver = "2"
 
-  members = ["signature", "spinners", "texture", "travelers"]
+  members = ["display", "signature", "spinners", "travelers"]

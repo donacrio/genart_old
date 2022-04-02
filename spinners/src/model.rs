@@ -1,15 +1,15 @@
+use display::DisplayDriver;
 use rand::prelude::{SeedableRng, SmallRng};
 use signature::Signature;
-use texture::TextureSaver;
 
 pub struct Model {
+  pub display_driver: DisplayDriver,
   pub rng: SmallRng,
-  pub texture_saver: TextureSaver,
   signature: Signature,
 }
 
 impl Model {
-  pub fn new(config_path: &str, seed: u64, texture_saver: TextureSaver) -> Self {
+  pub fn new(config_path: &str, seed: u64, display_driver: DisplayDriver) -> Self {
     let rng = <SmallRng as SeedableRng>::seed_from_u64(seed);
     let signature = Signature::new(vec![
       signature::generate_git_hash(),
@@ -17,8 +17,8 @@ impl Model {
       signature::generate_seed_hash(seed),
     ]);
     Self {
+      display_driver,
       rng,
-      texture_saver,
       signature,
     }
   }
