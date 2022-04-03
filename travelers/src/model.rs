@@ -1,13 +1,12 @@
 use crate::traveler::Traveler;
-use nannou::prelude::Vec2;
-use nannou::prelude::{window, Draw};
+use display::DisplayDriver;
+use nannou::prelude::Srgba;
 use std::cell::RefCell;
-use std::collections::HashMap;
 
 pub struct Model {
-  pub _window: window::Id,
-  pub _draw: Draw,
-  pub travelers_target: HashMap<usize, usize>,
+  pub display_driver: DisplayDriver,
+  pub travelers_colors: Vec<Srgba>,
+  pub travelers_targets: Vec<usize>,
+  // idea: create target trait and use it inside the travelers
   pub travelers: Vec<RefCell<Traveler>>,
-  pub points: Vec<Vec2>,
 }
