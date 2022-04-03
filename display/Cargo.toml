@@ -5,4 +5,4 @@
   version = "0.1.0"
 
 [dependencies]
-  nannou = "0.18"
+  nannou = "0.18.1"

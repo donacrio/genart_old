@@ -1,21 +1,24 @@
 mod model;
+mod strategy;
 mod traveler;
 
 use crate::model::Model;
+use crate::strategy::{apply_strategy, Strategy};
 use crate::traveler::Traveler;
 use display::DisplayDriver;
 use nannou::prelude::*;
 use rand::Rng;
-use std::cell::RefCell;
+use std::f32::consts::PI;
+use std::sync::{Arc, Mutex};
 
-const WIDTH: u32 = 3840;
-const HEIGHT: u32 = 3840;
-const N_TRAVELERS: usize = 500;
-const MAX_VELOCITY: f32 = 4.;
-const MAX_FORCE: f32 = 0.5;
-const RADIUS: f32 = 300.;
-const MAX_POINTS: u32 = 500;
-const DISPLAY_FACTOR: u32 = 4;
+const WIDTH: u32 = 1470;
+const HEIGHT: u32 = 1470;
+const N_TRAVELERS: usize = 200;
+const MAX_VELOCITY: f32 = 3.;
+const MAX_FORCE: f32 = 0.1;
+const MAX_POINTS: u32 = 100;
+const SEEK_RANGE: usize = 7;
+const DISPLAY_FACTOR: u32 = 2;
 const COLORS: [(u8, u8, u8); 15] = [
     (17, 21, 46),
     (19, 29, 120),
@@ -53,28 +56,28 @@ fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(w_id).unwrap();
 
-    let mut rng = rand::thread_rng();
     let mut travelers = Vec::new();
+    let mut rng = rand::thread_rng();
     for _ in 0..N_TRAVELERS {
-        let theta = deg_to_rad(360. * rng.gen::<f32>());
-        travelers.push(RefCell::new(Traveler::new(
+        let theta = 2. * PI * rng.gen::<f32>();
+        travelers.push(Arc::new(Mutex::new(Traveler::new(
             Vec2::splat(0.),
-            Vec2::new(theta.cos(), theta.sin()) * MAX_VELOCITY * rng.gen::<f32>(),
+            Vec2::new(theta.cos(), theta.sin()) * MAX_VELOCITY,
             Vec2::splat(0.),
             (rng.gen::<f32>() * MAX_POINTS as f32) as usize,
             MAX_VELOCITY,
             MAX_FORCE,
-        )));
+        ))));
     }
 
-    let mut travelers_targets: Vec<usize> = Vec::new();
-    let mut travelers_colors: Vec<Srgba> = Vec::new();
+    let mut targets = Vec::new();
+    let mut colors = Vec::new();
     let mut rng = rand::thread_rng();
 
     for i in 0..N_TRAVELERS {
-        // let target = (i + rng.gen_range(1..travelers.len())) % travelers.len();
-        let target = (i + rng.gen_range(1..5)) % N_TRAVELERS;
-        travelers_targets.push(target);
+        let target = (i + rng.gen_range(1..SEEK_RANGE)) % N_TRAVELERS;
+        let target = travelers.get(target).unwrap();
+        targets.push(Arc::clone(target));
         let color: usize = rng.gen_range(0..10);
         let color = COLORS[color];
         let color = Srgba::new(
@@ -83,7 +86,7 @@ fn model(app: &App) -> Model {
             color.2 as f32 / 255.,
             1.,
         );
-        travelers_colors.push(color);
+        colors.push(color);
     }
 
     // Make sure the directory where we will save images to exists.
@@ -92,34 +95,31 @@ fn model(app: &App) -> Model {
     Model {
         display_driver: DisplayDriver::new(&window, texture_size),
         travelers,
-        travelers_colors,
-        travelers_targets,
+        targets,
+        colors,
     }
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
     // Reset the `draw` state.
     let draw = model.display_driver.draw();
-
     draw.reset();
     if app.elapsed_frames() == 0 {
         draw.background().color(WHEAT);
     }
 
-    model
-        .travelers
-        .iter()
-        .enumerate()
-        .for_each(|(index, traveler)| {
-            let mut traveler = traveler.borrow_mut();
-            let target = model.travelers_targets.get(index).unwrap();
-            let target = model.travelers.get(*target).unwrap().borrow();
-            let color = model.travelers_colors.get(index).unwrap();
-            traveler.seek(target.position + target.velocity);
-            traveler.avoid_border(WIDTH as f32, HEIGHT as f32, RADIUS);
-            traveler.update();
-            traveler.draw(&draw, &target.position, color)
-        });
+    let center = Vec2::new(0., 0.);
+    for (index, traveler) in model.travelers.iter().enumerate() {
+        let mut traveler = traveler.lock().unwrap();
+        let target = model.targets.get(index).unwrap();
+        let target = target.lock().unwrap();
+        apply_strategy(&mut traveler, &target.position, Strategy::SEEK, MAX_FORCE);
+        let gravity = get_inverse_gravity(&traveler.position, &center, MAX_FORCE);
+        apply_strategy(&mut traveler, &center, Strategy::SEEK, gravity);
+        traveler.update();
+        let color = model.colors.get(index).unwrap();
+        draw_traveler(&traveler, &target.position, &draw, color);
+    }
 
     // Render our drawing to the texture.
     let window = app.main_window();
@@ -143,4 +143,27 @@ fn capture_directory(app: &nannou::app::App) -> std::path::PathBuf {
         .join("frames")
         .join("travelers")
         .join(elapsed_frames.to_string())
+}
+
+pub fn draw_traveler(traveler: &Traveler, target: &Vec2, draw: &Draw, color: &Srgba) {
+    let mut rng = rand::thread_rng();
+    let middle = (traveler.position + *target) / 2.;
+    let direction = *target - traveler.position;
+    for _ in 0..traveler.n_points {
+        let theta = 2. * PI * rng.gen::<f32>();
+        let point = middle + theta.sin() / 2. * direction;
+        draw.ellipse().xy(point).w_h(1., 1.).color(*color);
+        let point = middle - theta.sin() / 2. * direction;
+        draw.ellipse().xy(point).w_h(1., 1.).color(*color);
+    }
+}
+
+fn get_inverse_gravity(a: &Vec2, b: &Vec2, max_force: f32) -> f32 {
+    let distance = (*b - *a).length();
+    let limit = WIDTH.min(HEIGHT) as f32;
+    if distance < limit / 2. {
+        return 0.;
+    } else {
+        return (distance / limit).min(max_force);
+    }
 }

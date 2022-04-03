@@ -1,3 +1,5 @@
+use std::borrow::Borrow;
+
 pub struct DisplayDriver {
   texture: nannou::wgpu::Texture,
   texture_capturer: nannou::wgpu::TextureCapturer,
@@ -55,7 +57,7 @@ impl DisplayDriver {
   }
 
   pub fn draw(&self) -> &nannou::draw::Draw {
-    &self.draw
+    self.draw.borrow()
   }
 
   fn create_snapshot(&mut self, window: &nannou::window::Window) -> nannou::wgpu::TextueSnapshot {

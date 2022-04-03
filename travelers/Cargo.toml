@@ -6,5 +6,5 @@
 
 [dependencies]
   display = { path = "../display" }
-  nannou = "0.18"
-  rand = "0.8"
+  nannou = "0.18.1"
+  rand = "0.8.5"
