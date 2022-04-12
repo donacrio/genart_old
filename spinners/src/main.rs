@@ -5,12 +5,11 @@ mod spinner;
 
 use crate::cli::parse_cli_args;
 use crate::config::{load_config, Config};
-use crate::spinner::{Spinner, SpinnerInput};
+use crate::spinner::SpinnerDrawOptions;
 use display::DisplayDriver;
 use lazy_static::lazy_static;
 use model::Model;
 use nannou::prelude::*;
-use rand::prelude::{thread_rng, Rng};
 
 const CONFIG_DEFAULT_PATH: &str = "configs/spinners/default.toml";
 const NADOU: &str = "Nadou";
@@ -21,15 +20,30 @@ lazy_static! {
     .unwrap_or(CONFIG_DEFAULT_PATH.to_string());
   static ref CONFIG: Config = load_config(CONFIG_PATH.to_string());
   static ref NAME: String = parse_cli_args().name.unwrap_or("".to_string());
+  // static ref N_ITERATIONS: usize = CONFIG
+  //   .spinners
+  //   .iter()
+  //   .map(|spinner| {
+  //     spinner
+  //       .theta_increment
+  //       .unwrap_or(CONFIG.spinner_default_config.theta_increment)
+  //       / spinner
+  //         .theta_max
+  //         .unwrap_or(CONFIG.spinner_default_config.theta_max)
+  //   })
+  //   .max_by(|x, y| x.partial_cmp(y).unwrap())
+  //   .unwrap() as usize;
+    static ref N_ITERATIONS: usize = 500;
+
 }
 
 fn main() {
   nannou::app(model)
     .update(update)
-    .exit(exit)
     .loop_mode(LoopMode::NTimes {
-      number_of_updates: 1,
+      number_of_updates: *N_ITERATIONS,
     })
+    .exit(exit)
     .run();
 }
 
@@ -44,14 +58,11 @@ fn model(app: &App) -> Model {
     .unwrap();
   let window = app.window(w_id).unwrap();
 
-  let seed: u64 = thread_rng().gen();
-
   let model = Model::new(
+    &CONFIG,
     &CONFIG_PATH,
-    seed,
     DisplayDriver::new(&window, texture_size),
   );
-
   // Make sure the directory where we will save images to exists.
   std::fs::create_dir_all(&capture_directory(app, &model)).unwrap();
 
@@ -59,39 +70,27 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
+  let background_color: Srgb<f32> = CONFIG.window.background_color.into_format();
   // Reset the `draw` state.
   let draw = model.display_driver.draw();
   draw.reset();
+  if app.elapsed_frames() == 0 {
+    draw.background().color(background_color);
+  }
 
-  let background_color: Srgb<f32> = CONFIG.window.background_color.into_format();
-  draw.background().color(background_color);
-
-  for spinner_config in &CONFIG.spinners {
-    let spinner = Spinner::from(SpinnerInput::new(
-      spinner_config,
-      &CONFIG.spinner_default_config,
-    ));
-    let points = spinner.compute_points(&mut model.rng);
-    let options = DrawOptions {
-      color: spinner_config
-        .drawing
-        .as_ref()
-        .unwrap_or(&CONFIG.spinner_default_config.drawing)
-        .color
-        .into_format(),
-      point_weight: spinner_config
-        .drawing
-        .as_ref()
-        .unwrap_or(&CONFIG.spinner_default_config.drawing)
-        .point_weight,
-    };
+  for spinner in model.spinners.iter_mut() {
+    let points = spinner.compute_points(model.iteration);
+    let options = &spinner.draw_options;
     for point in &points {
-      draw_point(&draw, point, &options);
+      draw_point(&draw, point, options);
     }
   }
 
-  draw_signature(draw, &model);
+  if model.iteration == *N_ITERATIONS - 1 {
+    draw_signature(draw, &model);
+  }
 
+  model.iteration += 1;
   // Render our drawing to the texture.
   let window = app.main_window();
   model
@@ -108,12 +107,7 @@ fn exit(app: &App, model: Model) {
   model.display_driver.wait(&window);
 }
 
-struct DrawOptions {
-  pub color: Srgb<u8>,
-  pub point_weight: f32,
-}
-
-fn draw_point(draw: &Draw, point: &Point2, options: &DrawOptions) {
+fn draw_point(draw: &Draw, point: &Point2, options: &SpinnerDrawOptions) {
   draw
     .ellipse()
     .xy(*point)
@@ -154,6 +148,7 @@ fn draw_signature(draw: &Draw, model: &Model) {
 
 // The directory where we'll save the frames.
 fn capture_directory(app: &nannou::app::App, model: &Model) -> std::path::PathBuf {
+  let elapsed_frames = app.main_window().elapsed_frames();
   app
     .project_path()
     .expect("Could not locate project_path")
@@ -161,4 +156,5 @@ fn capture_directory(app: &nannou::app::App, model: &Model) -> std::path::PathBu
     .join("spinners")
     .join(NAME.as_str())
     .join(model.signature().generate_filename())
+    .join(elapsed_frames.to_string())
 }
